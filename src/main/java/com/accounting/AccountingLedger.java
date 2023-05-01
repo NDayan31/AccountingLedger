@@ -1,17 +1,25 @@
 package com.accounting;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class AccountingLedger {
+    static HashMap<String,AccountingEntries> entriesByVendor = new HashMap<>(); //HashMap created to search by vendor
+    static ArrayList<AccountingEntries> allEntries = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
+    static String fileName = "transactions.csv";
 
     public static void main(String[] args) {
-    String fileName = "transactions.csv";
 
         try {
-            BufferedReader bfReader = new BufferedReader(new FileReader(fileName));
             BufferedWriter brWriter = new BufferedWriter(new FileWriter(fileName));
+
+            accountEntries(); //Creates the ArrayList and HashMap
 
         //Building the Main Menu
         boolean exit = false;
@@ -100,9 +108,31 @@ public class AccountingLedger {
                     break;
             }
         }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public static void accountEntries() throws IOException {
+        BufferedReader bfReader = new BufferedReader(new FileReader(fileName));
+        String line;
+
+        while ((line = bfReader.readLine()) != null) {
+            String[] getAccountEntry = line.split(Pattern.quote("|"));
+            //Format: date|time|description|vendor|amount
+            String dateEntered = getAccountEntry[0]; //convert String to date
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate date = LocalDate.parse(dateEntered,formatter);
+            String time = getAccountEntry[1];
+            String description = getAccountEntry[2];
+            String vendor = getAccountEntry[3];
+            double amount = Double.parseDouble(getAccountEntry[4]);
+
+            //Creating array list for all entries
+            AccountingEntries accountingEntries = new AccountingEntries(date,time,description,vendor,amount);
+            allEntries.add(accountingEntries);
+
+            //Set's the vendor's HashMap from the array
+            entriesByVendor.put(accountingEntries.getVendor(),accountingEntries);
         }
     }
 }

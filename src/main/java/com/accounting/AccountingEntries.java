@@ -1,16 +1,17 @@
 package com.accounting;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class AccountingEntries {
     //Format: date|time|description|vendor|amount
-    private Date date;
+    private LocalDate date;
     private String time;
     private String description;
     private String vendor;
     private double amount;
 
-    public AccountingEntries(Date date, String time, String description, String vendor, double amount) {
+    public AccountingEntries(LocalDate date, String time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
         this.description = description;
@@ -18,11 +19,11 @@ public class AccountingEntries {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
