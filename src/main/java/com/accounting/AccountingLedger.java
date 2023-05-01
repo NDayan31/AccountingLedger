@@ -2,10 +2,9 @@ package com.accounting;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class AccountingLedger {
@@ -17,8 +16,6 @@ public class AccountingLedger {
     public static void main(String[] args) {
 
         try {
-            BufferedWriter brWriter = new BufferedWriter(new FileWriter(fileName));
-
             accountEntries(); //Creates the ArrayList and HashMap
 
         //Building the Main Menu
@@ -35,6 +32,7 @@ public class AccountingLedger {
             switch (command) {
                 case "D": //Add a deposit
                     //Prompt the user to add an entry
+                    
                     //Add it to the csv file
                     break;
                 case "P": //Make a Payment (Debit)
@@ -118,11 +116,14 @@ public class AccountingLedger {
 
         while ((line = bfReader.readLine()) != null) {
             String[] getAccountEntry = line.split(Pattern.quote("|"));
+
             //Format: date|time|description|vendor|amount
             String dateEntered = getAccountEntry[0]; //convert String to date
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate date = LocalDate.parse(dateEntered,formatter);
-            String time = getAccountEntry[1];
+            String timeEntered = getAccountEntry[1]; //convert String to time
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime time = LocalTime.parse(timeEntered,timeFormatter);
             String description = getAccountEntry[2];
             String vendor = getAccountEntry[3];
             double amount = Double.parseDouble(getAccountEntry[4]);
@@ -134,5 +135,20 @@ public class AccountingLedger {
             //Set's the vendor's HashMap from the array
             entriesByVendor.put(accountingEntries.getVendor(),accountingEntries);
         }
+    }
+    public static void addTransaction(LocalDate date, LocalTime time, String description, String vendor, double amount) throws IOException{
+        AccountingEntries textLine;
+        BufferedWriter brWriter = new BufferedWriter(new FileWriter(fileName));
+        //add variable to Arraylist
+        AccountingEntries newEntry = new AccountingEntries(date, time, description, vendor, amount);
+        allEntries.add(newEntry);
+        for (int i = 0; i < allEntries.size(); i++) {
+            textLine = allEntries.get(i);
+            brWriter.write(String.valueOf(textLine));
+        }
+
+        //close writer
+        brWriter.close();
+
     }
 }
