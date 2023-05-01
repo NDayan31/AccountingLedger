@@ -4,7 +4,6 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -22,11 +21,14 @@ public class AccountingLedger {
         //Building the Main Menu
         boolean exit = false;
         while (!exit) {
-            System.out.println("Hello! Welcome to your personal online financial record keeper.\nPlease choose from the following option.");
+            System.out.println("------------------------------------------");
+            System.out.println("Hello! Welcome to your Accounting Ledger");
+            System.out.println("Please choose from the following option.");
             System.out.println("\tD. Add a deposit");
             System.out.println("\tP. Make a Payment (Debit)");
             System.out.println("\tL. Ledger");
             System.out.println("\tX. Exit");
+            System.out.println("------------------------------------------");
             System.out.print("What would you like to do? ");
             String command = input.nextLine().toUpperCase();
 
@@ -71,24 +73,32 @@ public class AccountingLedger {
 
                     break;
                 case "L": //Ledger
+                    boolean exit2 = false;
+                    while (!exit2) {
+                    System.out.println("---------------------------");
                     System.out.println("\tYour Ledger");
                     System.out.println("A. Display all entries");
                     System.out.println("D. Display all deposits");
                     System.out.println("P. Displays all payments");
                     System.out.println("R. Run a report");
                     System.out.println("H. Return to Home screen");
+                    System.out.println("---------------------------");
                     System.out.print("What would you like to do: ");
-                    String command2 = input.nextLine();
-                    input.nextLine();
-                    while (command2.equalsIgnoreCase("H")){
+                    String command2 = input.nextLine().toUpperCase();
+
+                    /*while (!(command2.equals("H")))*/
                     switch (command2) {
                         case "A": //Display all entries
+                            for (int i = 0; i < allEntries.size(); i++) {
+                                System.out.println(allEntries.get(i));
+                            }
                             break;
                         case "D": //Displays deposits
                             break;
                         case "P": //Displays payments
                             break;
                         case "R": //Run a report
+                            System.out.println("---------------------------");
                             System.out.println("Reports:");
                             System.out.println("\t1. Month to Date");
                             System.out.println("\t2. Previous Month");
@@ -96,7 +106,9 @@ public class AccountingLedger {
                             System.out.println("\t4. Previous Year");
                             System.out.println("\t5. Search by vendor");
                             System.out.println("\t0. Return to the Ledger");
+                            System.out.println("---------------------------");
                             System.out.print("Choose a report: ");
+
                             int command3 = input.nextInt();
                             while (command3 != 0) {
                                 switch (command3) {
@@ -123,12 +135,14 @@ public class AccountingLedger {
                             break;
                         case "H": //Return to the home screen
                             System.out.println("Returning to home screen.");
-                            return;
+                            exit2 = true;
+                            break;
                         default:
                             System.out.println("Invalid input, try again.");
                             break;
                         }
                     }
+
                     break;
                 case "X": //Exit
                     System.out.println("Thank you. Have a Good Day!");
