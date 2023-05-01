@@ -2,6 +2,7 @@ package com.accounting;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class AccountingEntries {
@@ -29,6 +30,8 @@ public class AccountingEntries {
     }
 
     public LocalTime getTime() {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
         return time;
     }
 
@@ -62,6 +65,6 @@ public class AccountingEntries {
 
     @Override
     public String toString() {
-        return date + " | " + time + " | " + description + " | " + vendor + " | " + amount;
+        return date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
     }
 }

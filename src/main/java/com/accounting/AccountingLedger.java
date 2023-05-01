@@ -32,12 +32,42 @@ public class AccountingLedger {
             switch (command) {
                 case "D": //Add a deposit
                     //Prompt the user to add an entry
-                    
+                    System.out.print("Enter deposit date (YYYY-MM-DD): ");
+                    String depositDate = input.nextLine();
+                    System.out.print("Enter deposit time (HH:mm:ss): ");
+                    String depositTime = input.nextLine();
+                    System.out.print("Enter a brief description: ");
+                    String depositDescription = input.nextLine();
+                    System.out.print("Enter vendor name: ");
+                    String depositVendor = input.nextLine();
+                    System.out.print("Enter the deposit amount: ");
+                    double depositAmount = Math.abs(input.nextDouble()); //Always prints positive
+                    input.nextLine();
+
                     //Add it to the csv file
+                    addTransaction(depositDate,depositTime, depositDescription, depositVendor, depositAmount);
+                    System.out.println("----------------------\nEntry has been added");
+
                     break;
                 case "P": //Make a Payment (Debit)
                     //Prompt the user for the debit information
+                    System.out.print("Enter payment date (YYYY-MM-DD): ");
+                    String debitDate = input.nextLine();
+                    System.out.print("Enter payment time (HH:mm:ss): ");
+                    String debitTime = input.nextLine();
+                    System.out.print("Enter a brief description: ");
+                    String debitDescription = input.nextLine();
+                    System.out.print("Enter vendor name: ");
+                    String debitVendor = input.nextLine();
+                    System.out.print("Enter the payment amount (in negative format): ");
+                    double debitAmount = -Math.abs(input.nextDouble()); //Always prints in negative
+
+                    input.nextLine();
+
                     //Add it to the csv file
+                    addTransaction(debitDate, debitTime, debitDescription, debitVendor, debitAmount);
+                    System.out.println("----------------------\nEntry has been added");
+
                     break;
                 case "L": //Ledger
                     System.out.println("\tYour Ledger");
@@ -49,7 +79,8 @@ public class AccountingLedger {
                     System.out.print("What would you like to do: ");
                     String command2 = input.nextLine();
                     input.nextLine();
-                    switch (command2){
+                    while (command2.equalsIgnoreCase("H")){
+                    switch (command2) {
                         case "A": //Display all entries
                             break;
                         case "D": //Displays deposits
@@ -67,7 +98,7 @@ public class AccountingLedger {
                             System.out.print("Choose a report: ");
                             int command3 = input.nextInt();
                             while (command3 != 0) {
-                                switch (command3){
+                                switch (command3) {
                                     case 1: //Month to Date
                                         break;
                                     case 2: //Previous Month
@@ -95,6 +126,7 @@ public class AccountingLedger {
                         default:
                             System.out.println("Invalid input, try again.");
                             break;
+                        }
                     }
                     break;
                 case "X": //Exit
@@ -106,7 +138,9 @@ public class AccountingLedger {
                     break;
             }
         }
+
         } catch (IOException e) {
+            System.out.println("An unexpected error has occurred");
             throw new RuntimeException(e);
         }
     }
@@ -121,9 +155,11 @@ public class AccountingLedger {
             String dateEntered = getAccountEntry[0]; //convert String to date
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate date = LocalDate.parse(dateEntered,formatter);
+
             String timeEntered = getAccountEntry[1]; //convert String to time
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
             LocalTime time = LocalTime.parse(timeEntered,timeFormatter);
+
             String description = getAccountEntry[2];
             String vendor = getAccountEntry[3];
             double amount = Double.parseDouble(getAccountEntry[4]);
@@ -134,19 +170,29 @@ public class AccountingLedger {
 
             //Set's the vendor's HashMap from the array
             entriesByVendor.put(accountingEntries.getVendor(),accountingEntries);
+
         }
+        bfReader.close();
     }
-    public static void addTransaction(LocalDate date, LocalTime time, String description, String vendor, double amount) throws IOException{
+    public static void addTransaction(String dateEntered, String timeEntered, String description, String vendor, double amount) throws IOException{
         AccountingEntries textLine;
         BufferedWriter brWriter = new BufferedWriter(new FileWriter(fileName));
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateEntered,formatter);
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime time = LocalTime.parse(timeEntered,timeFormatter);
+
         //add variable to Arraylist
         AccountingEntries newEntry = new AccountingEntries(date, time, description, vendor, amount);
         allEntries.add(newEntry);
-        for (int i = 0; i < allEntries.size(); i++) {
-            textLine = allEntries.get(i);
+        for (AccountingEntries allEntry : allEntries) {
+            textLine = allEntry;
             brWriter.write(String.valueOf(textLine));
+            brWriter.newLine();
         }
-
         //close writer
         brWriter.close();
 
