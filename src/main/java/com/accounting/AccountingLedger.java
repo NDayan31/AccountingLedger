@@ -4,6 +4,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -158,7 +159,10 @@ public class AccountingLedger {
 
             String timeEntered = getAccountEntry[1]; //convert String to time
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-            LocalTime time = LocalTime.parse(timeEntered,timeFormatter);
+            /*DateTimeFormatter timeFormatter = new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive()
+                    .toFormatter();*/
+            LocalTime time = LocalTime.parse(timeEntered, timeFormatter);
 
             String description = getAccountEntry[2];
             String vendor = getAccountEntry[3];
@@ -177,7 +181,6 @@ public class AccountingLedger {
     public static void addTransaction(String dateEntered, String timeEntered, String description, String vendor, double amount) throws IOException{
         AccountingEntries textLine;
         BufferedWriter brWriter = new BufferedWriter(new FileWriter(fileName));
-
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(dateEntered,formatter);

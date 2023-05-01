@@ -30,8 +30,6 @@ public class AccountingEntries {
     }
 
     public LocalTime getTime() {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
         return time;
     }
 
@@ -65,6 +63,6 @@ public class AccountingEntries {
 
     @Override
     public String toString() {
-        return date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
+        return date + "|" + time.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "|" + description + "|" + vendor + "|" + amount;
     }
 }
