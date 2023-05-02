@@ -22,8 +22,8 @@ public class AccountingLedger {
         boolean exit = false;
         while (!exit) {
             System.out.println("------------------------------------------");
-            System.out.println("Hello! Welcome to your Accounting Ledger");
-            System.out.println("Please choose from the following option.");
+            System.out.println("Hello! Welcome to your Accounting Ledger\nPlease choose from the following option.");
+            System.out.println("\nPlease choose from the following option.");
             System.out.println("\tD. Add a deposit");
             System.out.println("\tP. Make a Payment (Debit)");
             System.out.println("\tL. Ledger");
@@ -49,7 +49,7 @@ public class AccountingLedger {
 
                     //Add it to the csv file
                     addTransaction(depositDate,depositTime, depositDescription, depositVendor, depositAmount);
-                    System.out.println("----------------------\nEntry has been added");
+                    System.out.println("------------------------------------------\nEntry has been added");
 
                     break;
                 case "P": //Make a Payment (Debit)
@@ -62,43 +62,54 @@ public class AccountingLedger {
                     String debitDescription = input.nextLine();
                     System.out.print("Enter vendor name: ");
                     String debitVendor = input.nextLine();
-                    System.out.print("Enter the payment amount (in negative format): ");
+                    System.out.print("Enter the payment amount: ");
                     double debitAmount = -Math.abs(input.nextDouble()); //Always prints in negative
-
                     input.nextLine();
 
                     //Add it to the csv file
                     addTransaction(debitDate, debitTime, debitDescription, debitVendor, debitAmount);
-                    System.out.println("----------------------\nEntry has been added");
+                    System.out.println("------------------------------------------\nEntry has been added");
 
                     break;
                 case "L": //Ledger
                     boolean exit2 = false;
                     while (!exit2) {
-                    System.out.println("---------------------------");
+                    System.out.println("------------------------------------------");
                     System.out.println("\tYour Ledger");
                     System.out.println("A. Display all entries");
                     System.out.println("D. Display all deposits");
                     System.out.println("P. Displays all payments");
                     System.out.println("R. Run a report");
                     System.out.println("H. Return to Home screen");
-                    System.out.println("---------------------------");
+                    System.out.println("------------------------------------------");
                     System.out.print("What would you like to do: ");
                     String command2 = input.nextLine().toUpperCase();
 
                     /*while (!(command2.equals("H")))*/
                     switch (command2) {
                         case "A": //Display all entries
-                            for (int i = 0; i < allEntries.size(); i++) {
-                                System.out.println(allEntries.get(i));
+                            for (AccountingEntries entry : allEntries) {
+                                System.out.println(entry);
                             }
                             break;
                         case "D": //Displays deposits
+                            for (AccountingEntries allEntry : allEntries) {
+                                if (allEntry.getAmount() > 0) {
+                                    System.out.println(allEntry);
+                                }
+                            }
                             break;
                         case "P": //Displays payments
+                            for (AccountingEntries allEntry : allEntries) {
+                                if (allEntry.getAmount() < 0) {
+                                    System.out.println(allEntry);
+                                }
+                            }
                             break;
                         case "R": //Run a report
-                            System.out.println("---------------------------");
+                            boolean exit3 = false;
+                            while (!exit3) {
+                            System.out.println("------------------------------------------");
                             System.out.println("Reports:");
                             System.out.println("\t1. Month to Date");
                             System.out.println("\t2. Previous Month");
@@ -106,27 +117,51 @@ public class AccountingLedger {
                             System.out.println("\t4. Previous Year");
                             System.out.println("\t5. Search by vendor");
                             System.out.println("\t0. Return to the Ledger");
-                            System.out.println("---------------------------");
+                            System.out.println("------------------------------------------");
                             System.out.print("Choose a report: ");
 
                             int command3 = input.nextInt();
-                            while (command3 != 0) {
+
+                                LocalDate today = LocalDate.now();
+
                                 switch (command3) {
                                     case 1: //Month to Date
+                                        for (AccountingEntries allEntry : allEntries) {
+                                            if (allEntry.getDate().getMonth() == today.getMonth()) {
+                                                System.out.println(allEntry);
+                                            }
+                                        }
                                         break;
                                     case 2: //Previous Month
+                                        for (AccountingEntries allEntry : allEntries) {
+                                            if (allEntry.getDate().getMonth() == today.getMonth().minus(1)) {
+                                                System.out.println(allEntry);
+                                            }
+                                        }
                                         break;
                                     case 3: //Year to Date
+                                        for (AccountingEntries allEntry : allEntries) {
+                                            if (allEntry.getDate().getYear() == today.getYear()) {
+                                                System.out.println(allEntry);
+                                            }
+                                        }
                                         break;
                                     case 4: //Previous Year
+                                        for (AccountingEntries allEntry : allEntries) {
+                                            if (allEntry.getDate().getYear() == today.getYear() - 1) {
+                                                System.out.println(allEntry);
+                                            }
+                                        }
                                         break;
                                     case 5: //Search by vendor
                                         //Display current list of vendors
                                         //prompt a selection
+                                        searchVendor();
                                         break;
                                     case 0: //return to ledger
                                         System.out.println("Returning to Ledger menu");
-                                        return;
+                                        exit3 = true;
+                                        break;
                                     default: //User Error
                                         System.out.println("Invalid input, try again.");
                                         break;
@@ -173,9 +208,6 @@ public class AccountingLedger {
 
             String timeEntered = getAccountEntry[1]; //convert String to time
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-            /*DateTimeFormatter timeFormatter = new DateTimeFormatterBuilder()
-                    .parseCaseInsensitive()
-                    .toFormatter();*/
             LocalTime time = LocalTime.parse(timeEntered, timeFormatter);
 
             String description = getAccountEntry[2];
@@ -205,6 +237,7 @@ public class AccountingLedger {
         //add variable to Arraylist
         AccountingEntries newEntry = new AccountingEntries(date, time, description, vendor, amount);
         allEntries.add(newEntry);
+
         for (AccountingEntries allEntry : allEntries) {
             textLine = allEntry;
             brWriter.write(String.valueOf(textLine));
@@ -212,6 +245,20 @@ public class AccountingLedger {
         }
         //close writer
         brWriter.close();
+    }
+    public static void searchVendor () {
+            System.out.println("List of associated vendors:");
+            for (String key : entriesByVendor.keySet()) {
+                System.out.println(key);
+            }
+            System.out.print("Enter vendor name: ");
+            input.nextLine();
+            String vendorName = input.nextLine();
 
+        for (AccountingEntries allEntry : allEntries) {
+            if (allEntry.getVendor().equalsIgnoreCase(vendorName)) {
+                System.out.println(allEntry);
+            }
+        }
     }
 }
