@@ -84,7 +84,6 @@ public class AccountingLedger {
                     System.out.print("What would you like to do: ");
                     String command2 = input.nextLine().toUpperCase();
 
-                    /*while (!(command2.equals("H")))*/
                     switch (command2) {
                         case "A": //Display all entries
                             for (AccountingEntries entry : allEntries) {
@@ -126,21 +125,21 @@ public class AccountingLedger {
                                 switch (command3) {
                                     case 1: //Month to Date
                                         for (AccountingEntries allEntry : allEntries) {
-                                            if (allEntry.getDate().getMonth() == today.getMonth()) {
+                                            if (allEntry.getDate().getMonth() == today.getMonth() && allEntry.getDate().getYear() == today.getYear()) {
                                                 System.out.println(allEntry);
                                             }
                                         }
                                         break;
                                     case 2: //Previous Month
                                         for (AccountingEntries allEntry : allEntries) {
-                                            if (allEntry.getDate().getMonth() == today.getMonth().minus(1)) {
+                                            if (allEntry.getDate().getMonth() == today.getMonth().minus(1) && allEntry.getDate().getYear() == today.getYear()) {
                                                 System.out.println(allEntry);
                                             }
                                         }
                                         break;
                                     case 3: //Year to Date
                                         for (AccountingEntries allEntry : allEntries) {
-                                            if (allEntry.getDate().getYear() == today.getYear()) {
+                                            if (allEntry.getDate().getYear() == today.getYear() ) {
                                                 System.out.println(allEntry);
                                             }
                                         }
@@ -153,9 +152,7 @@ public class AccountingLedger {
                                         }
                                         break;
                                     case 5: //Search by vendor
-                                        //Display current list of vendors
-                                        //prompt a selection
-                                        searchVendor();
+                                        searchVendor(); //Display current list of vendors
                                         break;
                                     case 0: //return to ledger
                                         System.out.println("Returning to Ledger menu");
@@ -176,7 +173,6 @@ public class AccountingLedger {
                             break;
                         }
                     }
-
                     break;
                 case "X": //Exit
                     System.out.println("Thank you. Have a Good Day!");
@@ -187,7 +183,6 @@ public class AccountingLedger {
                     break;
                 }
             }
-
         } catch (IOException e) {
             System.out.println("An unexpected error has occurred");
             throw new RuntimeException(e);
@@ -248,7 +243,7 @@ public class AccountingLedger {
                 for (AccountingEntries entry : allEntries) {
                     vendorList.add(entry.getVendor());
                 }
-                vendorList.stream().distinct().forEach(System.out::println); //print a unique lis of vendors to choose from
+                vendorList.stream().distinct().forEach(System.out::println); //print a unique list of vendors to choose from
 
             System.out.print("Enter vendor name: "); //user selects from the list above
             input.nextLine();
