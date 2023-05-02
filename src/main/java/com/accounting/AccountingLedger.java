@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class AccountingLedger {
-    static HashMap<String,AccountingEntries> entriesByVendor = new HashMap<>(); //HashMap created to search by vendor
     static ArrayList<AccountingEntries> allEntries = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
     static String fileName = "transactions.csv";
@@ -16,13 +15,13 @@ public class AccountingLedger {
     public static void main(String[] args) {
 
         try {
-            accountEntries(); //Creates the ArrayList and HashMap
+            accountEntries(); //Creates the ArrayList
 
         //Building the Main Menu
         boolean exit = false;
         while (!exit) {
             System.out.println("------------------------------------------");
-            System.out.println("Hello! Welcome to your Accounting Ledger\nPlease choose from the following option.");
+            System.out.println("Hello! Welcome to your Accounting Ledger");
             System.out.println("\nPlease choose from the following option.");
             System.out.println("\tD. Add a deposit");
             System.out.println("\tP. Make a Payment (Debit)");
@@ -186,8 +185,8 @@ public class AccountingLedger {
                 default: //User Error
                     System.out.println("Invalid input, try again.");
                     break;
+                }
             }
-        }
 
         } catch (IOException e) {
             System.out.println("An unexpected error has occurred");
@@ -218,9 +217,6 @@ public class AccountingLedger {
             AccountingEntries accountingEntries = new AccountingEntries(date,time,description,vendor,amount);
             allEntries.add(accountingEntries);
 
-            //Set's the vendor's HashMap from the array
-            entriesByVendor.put(accountingEntries.getVendor(),accountingEntries);
-
         }
         bfReader.close();
     }
@@ -248,14 +244,17 @@ public class AccountingLedger {
     }
     public static void searchVendor () {
             System.out.println("List of associated vendors:");
-            for (String key : entriesByVendor.keySet()) {
-                System.out.println(key);
-            }
-            System.out.print("Enter vendor name: ");
+                ArrayList<Object> vendorList = new ArrayList<>(); //local ArrayList for the vendors
+                for (AccountingEntries entry : allEntries) {
+                    vendorList.add(entry.getVendor());
+                }
+                vendorList.stream().distinct().forEach(System.out::println); //print a unique lis of vendors to choose from
+
+            System.out.print("Enter vendor name: "); //user selects from the list above
             input.nextLine();
             String vendorName = input.nextLine();
 
-        for (AccountingEntries allEntry : allEntries) {
+        for (AccountingEntries allEntry : allEntries) { //prints all that match the user
             if (allEntry.getVendor().equalsIgnoreCase(vendorName)) {
                 System.out.println(allEntry);
             }
