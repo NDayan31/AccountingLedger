@@ -229,7 +229,7 @@ public class AccountingLedger {
         AccountingEntries newEntry = new AccountingEntries(date, time, description, vendor, amount);
         allEntries.add(newEntry);
 
-        for (AccountingEntries allEntry : allEntries) {
+        for (AccountingEntries allEntry : allEntries) { //writes the array in the .csv file
             textLine = allEntry;
             brWriter.write(String.valueOf(textLine));
             brWriter.newLine();
