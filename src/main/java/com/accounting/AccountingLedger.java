@@ -126,21 +126,27 @@ public class AccountingLedger {
                                     switch (command3) {
                                         case 1: //Month to Date
                                             for (AccountingEntries allEntry : allEntries) {
-                                                if (allEntry.getDate().getMonth() == today.getMonth() && allEntry.getDate().getYear() == today.getYear() && allEntry.getDate() <= today) {
+                                                //User won't see future dates within the month
+                                                if (allEntry.getDate().getMonth() == today.getMonth() && allEntry.getDate().getYear() == today.getYear()
+                                                        && (allEntry.getDate().isBefore(today) || allEntry.getDate().isEqual(today))) {
                                                     System.out.println(allEntry);
                                                 }
                                             }
                                             break;
                                         case 2: //Previous Month
                                             for (AccountingEntries allEntry : allEntries) {
-                                                if (allEntry.getDate().getMonth() == today.getMonth().minus(1) && allEntry.getDate().getYear() == today.getYear()) {
+                                                // Will not display previous months in past years
+                                                if (allEntry.getDate().getMonth() == today.getMonth().minus(1)
+                                                        && allEntry.getDate().getYear() == today.getYear()) {
                                                     System.out.println(allEntry);
                                                 }
                                             }
                                             break;
                                         case 3: //Year to Date
                                             for (AccountingEntries allEntry : allEntries) {
-                                                if (allEntry.getDate().getYear() == today.getYear()) {
+                                                //User won't see future dates within the year
+                                                if (allEntry.getDate().getYear() == today.getYear()
+                                                        && (allEntry.getDate().isBefore(today) || allEntry.getDate().isEqual(today))) {
                                                     System.out.println(allEntry);
                                                 }
                                             }
