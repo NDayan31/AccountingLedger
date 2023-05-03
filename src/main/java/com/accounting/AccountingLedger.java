@@ -107,60 +107,65 @@ public class AccountingLedger {
                         case "R": //Run a report
                             boolean exit3 = false;
                             while (!exit3) {
-                            System.out.println("------------------------------------------");
-                            System.out.println("Reports:");
-                            System.out.println("\t1. Month to Date");
-                            System.out.println("\t2. Previous Month");
-                            System.out.println("\t3. Year to Date");
-                            System.out.println("\t4. Previous Year");
-                            System.out.println("\t5. Search by vendor");
-                            System.out.println("\t0. Return to the Ledger");
-                            System.out.println("------------------------------------------");
-                            System.out.print("Choose a report: ");
+                                try {
+                                    System.out.println("------------------------------------------");
+                                    System.out.println("Reports:");
+                                    System.out.println("\t1. Month to Date");
+                                    System.out.println("\t2. Previous Month");
+                                    System.out.println("\t3. Year to Date");
+                                    System.out.println("\t4. Previous Year");
+                                    System.out.println("\t5. Search by vendor");
+                                    System.out.println("\t0. Return to the Ledger");
+                                    System.out.println("------------------------------------------");
+                                    System.out.print("Choose a report: ");
 
-                            int command3 = input.nextInt();
+                                    int command3 = input.nextInt();
 
-                                LocalDate today = LocalDate.now();
+                                    LocalDate today = LocalDate.now();
 
-                                switch (command3) {
-                                    case 1: //Month to Date
-                                        for (AccountingEntries allEntry : allEntries) {
-                                            if (allEntry.getDate().getMonth() == today.getMonth() && allEntry.getDate().getYear() == today.getYear()) {
-                                                System.out.println(allEntry);
+                                    switch (command3) {
+                                        case 1: //Month to Date
+                                            for (AccountingEntries allEntry : allEntries) {
+                                                if (allEntry.getDate().getMonth() == today.getMonth() && allEntry.getDate().getYear() == today.getYear() && allEntry.getDate() <= today) {
+                                                    System.out.println(allEntry);
+                                                }
                                             }
-                                        }
-                                        break;
-                                    case 2: //Previous Month
-                                        for (AccountingEntries allEntry : allEntries) {
-                                            if (allEntry.getDate().getMonth() == today.getMonth().minus(1) && allEntry.getDate().getYear() == today.getYear()) {
-                                                System.out.println(allEntry);
+                                            break;
+                                        case 2: //Previous Month
+                                            for (AccountingEntries allEntry : allEntries) {
+                                                if (allEntry.getDate().getMonth() == today.getMonth().minus(1) && allEntry.getDate().getYear() == today.getYear()) {
+                                                    System.out.println(allEntry);
+                                                }
                                             }
-                                        }
-                                        break;
-                                    case 3: //Year to Date
-                                        for (AccountingEntries allEntry : allEntries) {
-                                            if (allEntry.getDate().getYear() == today.getYear() ) {
-                                                System.out.println(allEntry);
+                                            break;
+                                        case 3: //Year to Date
+                                            for (AccountingEntries allEntry : allEntries) {
+                                                if (allEntry.getDate().getYear() == today.getYear()) {
+                                                    System.out.println(allEntry);
+                                                }
                                             }
-                                        }
-                                        break;
-                                    case 4: //Previous Year
-                                        for (AccountingEntries allEntry : allEntries) {
-                                            if (allEntry.getDate().getYear() == today.getYear() - 1) {
-                                                System.out.println(allEntry);
+                                            break;
+                                        case 4: //Previous Year
+                                            for (AccountingEntries allEntry : allEntries) {
+                                                if (allEntry.getDate().getYear() == today.getYear() - 1) {
+                                                    System.out.println(allEntry);
+                                                }
                                             }
-                                        }
-                                        break;
-                                    case 5: //Search by vendor
-                                        searchVendor(); //Display current list of vendors
-                                        break;
-                                    case 0: //return to ledger
-                                        System.out.println("Returning to Ledger menu");
-                                        exit3 = true;
-                                        break;
-                                    default: //User Error
-                                        System.out.println("Invalid input, try again.");
-                                        break;
+                                            break;
+                                        case 5: //Search by vendor
+                                            searchVendor(); //Display current list of vendors
+                                            break;
+                                        case 0: //return to ledger
+                                            System.out.println("Returning to Ledger menu");
+                                            exit3 = true;
+                                            break;
+                                        default: //User Error
+                                            System.out.println("Invalid input, try again.\n");
+                                            break;
+                                    }
+                                } catch (Exception ex){
+                                    System.out.println("Invalid Input\n");
+                                    input.nextLine();
                                 }
                             }
                             break;
@@ -169,7 +174,7 @@ public class AccountingLedger {
                             exit2 = true;
                             break;
                         default:
-                            System.out.println("Invalid input, try again.");
+                            System.out.println("Invalid input, try again.\n");
                             break;
                         }
                     }
@@ -179,7 +184,7 @@ public class AccountingLedger {
                     exit = true;
                     break;
                 default: //User Error
-                    System.out.println("Invalid input, try again.");
+                    System.out.println("Invalid input, try again.\n");
                     break;
                 }
             }
@@ -188,6 +193,7 @@ public class AccountingLedger {
             throw new RuntimeException(e);
         }
     }
+
     public static void accountEntries() throws IOException {
         BufferedReader bfReader = new BufferedReader(new FileReader(fileName));
         String line;
